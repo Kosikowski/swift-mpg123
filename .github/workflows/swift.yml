@@ -1,0 +1,25 @@
+name: Swift Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install mpg123
+        run: |
+          brew update
+          brew install mpg123
+
+      - name: Build Swift package
+        run: swift build -v
+
+      - name: Run tests
+        run: swift test -v 

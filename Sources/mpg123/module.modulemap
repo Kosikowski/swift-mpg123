@@ -1,0 +1,5 @@
+module mpg123 [system] {
+  header "include/mpg123.h"
+  link "mpg123"
+  export *
+} 
