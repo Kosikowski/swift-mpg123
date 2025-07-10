@@ -15,13 +15,17 @@ func promptForEqualizerPreset() -> EqualizerPreset? {
     print("  3. Treble Boost")
     print("  4. Vocal Boost")
     print("  5. Custom")
-    print("Enter choice [1-5]: ", terminator: "")
+    print("  6. Very Low (muffled sound)")
+    print("  7. Very High (bright sound)")
+    print("Enter choice [1-7]: ", terminator: "")
     guard let input = readLine(), let choice = Int(input) else { return .flat }
     switch choice {
     case 2: return .bassBoost
     case 3: return .trebleBoost
     case 4: return .vocalBoost
     case 5: return nil // Custom
+    case 6: return .veryLow
+    case 7: return .veryHigh
     default: return .flat
     }
 }

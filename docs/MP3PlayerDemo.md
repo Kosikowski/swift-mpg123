@@ -65,4 +65,4 @@ The demo will display:
 
 - macOS 12.0 or later
 - mpg123 library installed via Homebrew
-- Swift 6.1 or later 
+- Swift 5.6 or later 

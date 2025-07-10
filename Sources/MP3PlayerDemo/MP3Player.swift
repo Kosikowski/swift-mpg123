@@ -15,6 +15,8 @@ public enum EqualizerPreset {
     case trebleBoost
     case vocalBoost
     case custom
+    case veryLow
+    case veryHigh
 }
 
 /// MP3 Player that uses SwiftMpg123 for decoding and AVAudioPlayerNode for playback
@@ -111,22 +113,7 @@ public class MP3Player: NSObject {
             return
         }
 
-        print("Setting up equalizer...")
-
-        // Apply some example equalizer settings
-        // Bass boost (low frequencies)
-        try? mpg123.setEqualizer(channel: 0, band: 0, value: 0.3) // Left channel, lowest band
-        try? mpg123.setEqualizer(channel: 1, band: 0, value: 0.3) // Right channel, lowest band
-
-        // Slight treble boost (high frequencies)
-        try? mpg123.setEqualizer(channel: 0, band: 31, value: 0.2) // Left channel, highest band
-        try? mpg123.setEqualizer(channel: 1, band: 31, value: 0.2) // Right channel, highest band
-
-        // Mid-range adjustment
-        try? mpg123.setEqualizer(channel: 0, band: 15, value: -0.1) // Left channel, mid band
-        try? mpg123.setEqualizer(channel: 1, band: 15, value: -0.1) // Right channel, mid band
-
-        print("Equalizer configured with bass boost and slight treble enhancement")
+        print("Equalizer is available - user will choose preset from menu")
     }
 
     /// Set equalizer band value
@@ -196,6 +183,22 @@ public class MP3Player: NSObject {
                 try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
             }
             print("Applied custom preset (treble boost)")
+        case .veryLow:
+            // Very low equalizer preset
+            for band in 0..<32 {
+                let value = -0.9 // Very strong reduction
+                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+            }
+            print("Applied very low equalizer preset")
+        case .veryHigh:
+            // Very high equalizer preset
+            for band in 0..<32 {
+                let value = 0.9 // Very strong enhancement
+                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+            }
+            print("Applied very high equalizer preset")
         }
     }
 
