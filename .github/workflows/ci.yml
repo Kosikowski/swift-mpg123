@@ -51,106 +51,6 @@ jobs:
       - name: Run demo
         run: swift run MP3PlayerDemo --help || true
 
-  # Linux
-  build-linux:
-    runs-on: ubuntu-latest
-    name: Linux (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libmpg123-dev pkg-config
-      - name: Show Swift version
-        run: swift --version
-      - name: Build library only
-        run: swift build -v --target SwiftMpg123
-      - name: Run tests
-        run: swift test -v
-
-  build-linux-release:
-    runs-on: ubuntu-latest
-    name: Linux Release (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libmpg123-dev pkg-config
-      - name: Show Swift version
-        run: swift --version
-      - name: Build library only (release)
-        run: swift build -c release -v --target SwiftMpg123
-      - name: Run tests (release)
-        run: swift test -c release -v
-
-  # Windows
-  build-windows:
-    runs-on: windows-2022
-    name: Windows (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Install mpg123 (Windows)
-        run: |
-          echo "mpg123 installation on Windows requires manual setup"
-        shell: pwsh
-      - name: Verify Swift installation
-        run: |
-          swift --version
-          swift build --help
-        shell: pwsh
-      - name: Build library only
-        run: swift build -v --product SwiftMpg123
-        shell: pwsh
-      - name: Run tests
-        run: swift test -v
-        shell: pwsh
-
-  build-windows-release:
-    runs-on: windows-2022
-    name: Windows Release (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Verify Swift installation
-        run: |
-          swift --version
-          swift build --help
-        shell: pwsh
-      - name: Build library only (release)
-        run: swift build -c release -v --product SwiftMpg123
-        shell: pwsh
-      - name: Run tests (release)
-        run: swift test -c release -v
-        shell: pwsh
-
   # Code Quality (macOS only)
   code-quality:
     name: Code Quality
@@ -249,77 +149,43 @@ jobs:
 
   # Release job - only runs on tag pushes
   release:
-    runs-on: macos-14
     name: Create Release
+    runs-on: macos-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-macos, build-linux, build-linux-release, build-windows, build-windows-release]
+    needs: [build-macos, code-quality, package-validation, security]
+    
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16.2'
-
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: "5.9"
-
-      - name: Install mpg123
-        run: |
-          brew install mpg123
-
-      - name: Clean build directory
-        run: rm -rf .build
-
-      - name: Build Release
-        run: swift build -c release
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body: |
-            ## What's Changed
-
-            This release includes:
-            - SwiftMpg123 MP3 decoding library improvements
-            - Cross-platform support (macOS, Linux, Windows)
-            - Enhanced CI/CD pipeline with Swift 5.9 and 6.1.2 support
-
-            ## Installation
-
-            ```swift
-            dependencies: [
-                .package(url: "https://github.com/mateuszkosikowski/swift-mpg123.git", from: "${{ github.ref_name }}")
-            ]
-            ```
-
-            ## Supported Platforms
-
-            - macOS 12.0+
-            - Linux
-            - Windows
-
-            ## Swift Version Support
-
-            - Swift 5.9+
-            - Swift 6.1.2+
-
-            ## Features
-
-            - MP3 file decoding and playback
-            - Audio format detection and configuration
-            - Metadata extraction (ID3v1/ID3v2 tags)
-            - Seeking and positioning in audio streams
-            - Streaming audio data processing
-            - Equalizer support
-            - Volume control
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ## What's Changed
+          
+          This release includes:
+          - MP3 decoding capabilities via mpg123
+          - Swift wrapper for mpg123 C library
+          - Demo CLI application for MP3 playback
+          
+          ## Installation
+          
+          ```swift
+          .package(url: "https://github.com/your-username/swift-mpg123.git", from: "${{ github.ref_name }}")
+          ```
+          
+          ## Usage
+          
+          ```swift
+          import SwiftMpg123
+          
+          let decoder = MPG123()
+          // ... use the decoder
+          ```
+        draft: false
+        prerelease: false 
