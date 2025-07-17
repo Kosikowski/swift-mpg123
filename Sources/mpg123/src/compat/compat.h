@@ -38,7 +38,11 @@
 #endif
 
 #ifdef HAVE_UNISTD_H
+#ifdef _WIN32
+#include "../include/unistd.h"
+#else
 #include <unistd.h>
+#endif
 #endif
 
 /* Types, types, types. */
