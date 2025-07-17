@@ -191,8 +191,6 @@ jobs:
     - name: Check package description
       run: swift package describe
       
-    - name: Generate Xcode project
-      run: swift package generate-xcodeproj
 
   # Security and Dependencies
   security:
