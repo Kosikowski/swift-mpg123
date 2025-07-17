@@ -43,7 +43,9 @@
 #define FIR_SIZE 16
 
 /* Define default decoder type */
+#ifndef OPT_MULTI
 #define defopt generic
+#endif
 
 /* Define optimization options */
 #define OPT_MULTI 1

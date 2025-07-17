@@ -75,6 +75,8 @@ targets.insert(
             // Only include alsa, pulse, oss, etc. for Linux
             // Exclude all other platform modules
             "src/libout123/modules/sun.c", "src/libout123/modules/hp.c", "src/libout123/modules/sgi.c", "src/libout123/modules/aix.c", "src/libout123/modules/qsa.c", "src/libout123/modules/mint.c", "src/libout123/modules/os2.c", "src/libout123/modules/alib.c",
+            // Exclude modules that require external libraries
+            "src/libout123/modules/tinyalsa.c", "src/libout123/modules/pulse.c", "src/libout123/modules/alsa.c", "src/libout123/modules/oss.c", "src/libout123/modules/sndio.c", "src/libout123/modules/esd.c", "src/libout123/modules/nas.c", "src/libout123/modules/arts.c", "src/libout123/modules/jack.c",
             // Cross-platform optional files (excluded by default)
             "src/libout123/modules/sdl.c", "src/libout123/modules/openal.c", "src/libout123/modules/portaudio.c",
             // Build system files
@@ -103,6 +105,12 @@ targets.insert(
             "src/mpg123-with-modules", "src/out123-with-modules",
             // Exclude all Apple and Linux modules
             "src/libout123/modules/coreaudio.c",
+            // Exclude Windows-specific files that cause POSIX dependencies
+            "src/win32_support.c", "src/win32_support.h", "src/win32_net.c", "src/net123_wininet.c", "src/net123_winhttp.c", "src/term_win32.c",
+            // Exclude files that include mpg123app.h (which includes compat.h)
+            "src/sysutil.c", "src/local.c",
+            // Exclude files that include compat.h directly
+            "src/getlopt.c", "src/libmpg123/stringbuf.c", "src/libmpg123/icy2utf8.c", "src/libmpg123/lfs_wrap.c", "src/libout123/xfermem.c", "src/libout123/stringlists.c", "src/libout123/module.c",
             "src/libout123/modules/pulse.c", "src/libout123/modules/alsa.c", "src/libout123/modules/oss.c", "src/libout123/modules/tinyalsa.c", "src/libout123/modules/sndio.c", "src/libout123/modules/esd.c", "src/libout123/modules/nas.c", "src/libout123/modules/arts.c", "src/libout123/modules/jack.c",
             // Only include win32, win32_wasapi, etc. for Windows
             // Exclude all other platform modules
