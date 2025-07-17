@@ -26,7 +26,7 @@ targets.append(
 #endif
 
 // Platform-specific C targets
-#if os(macOS) || os(iOS) || os(tvOS) || os(visionOS)
+#if os(macOS)
 targets.insert(
     .target(
         name: "cmpg123",
