@@ -3,8 +3,8 @@
 //
 //  Created by Mateusz Kosikowski, PhD on 12/01/2020.
 //
+import cmpg123
 import Foundation
-import mpg123
 
 // MARK: - MPG123Error
 

@@ -1,4 +1,4 @@
-name: Swift Build & Test
+name: Swift
 
 on:
   push:
@@ -8,18 +8,19 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-latest]
+        swift: ['5.9']
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install mpg123
-        run: |
-          brew update
-          brew install mpg123
-
-      - name: Build Swift package
-        run: swift build -v
-
-      - name: Run tests
-        run: swift test -v 
+    - uses: actions/checkout@v4
+    - name: Install Swift
+      uses: SwiftyLab/setup-swift@v1
+      with:
+        swift-version: ${{ matrix.swift }}
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v 

@@ -9,8 +9,8 @@
 #elseif canImport(Glibc)
     import Glibc // For SEEK_SET, SEEK_CUR, SEEK_END
 #endif
+import cmpg123
 import Foundation // For Data type
-import mpg123
 
 // MARK: - MPG123
 
