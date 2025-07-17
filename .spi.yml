@@ -7,4 +7,7 @@ builder:
       - mpg123            # same name you used in Package.swift
   linux:
     apt:
-      - libmpg123-dev 
+      - libmpg123-dev
+  windows:
+    chocolatey:
+      - mpg123            # mpg123 package for Windows 
