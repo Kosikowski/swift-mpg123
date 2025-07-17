@@ -4,9 +4,15 @@
 //  Created by Mateusz Kosikowski, PhD on 10/01/2020.
 //
 
-import Darwin // For SEEK_SET, SEEK_CUR, SEEK_END
+#if canImport(Darwin)
+    import Darwin // For SEEK_SET, SEEK_CUR, SEEK_END
+#elseif canImport(Glibc)
+    import Glibc // For SEEK_SET, SEEK_CUR, SEEK_END
+#endif
 import Foundation // For Data type
 import mpg123
+
+// MARK: - MPG123
 
 /// A Swift wrapper for the mpg123 library, providing MP3 decoding functionality.
 public class MPG123 {

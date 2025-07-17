@@ -188,9 +188,6 @@ jobs:
       with:
         swift-version: '5.9'
         
-    - name: Validate package
-      run: swift package validate
-      
     - name: Check package description
       run: swift package describe
       

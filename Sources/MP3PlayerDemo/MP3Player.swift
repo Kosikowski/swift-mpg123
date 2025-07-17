@@ -223,10 +223,7 @@ public class MP3Player: NSObject {
 
     /// Setup equalizer with some example presets
     private func setupEqualizer() {
-        guard let mpg123 else { return }
-
-        // Check if equalizer is available
-        if !MPG123.hasFeature(.equalizer) {
+        guard MPG123.hasFeature(.equalizer) else {
             print("Equalizer not available in this mpg123 build")
             return
         }
@@ -563,16 +560,18 @@ public class MP3Player: NSObject {
 
         // Progress bar setup
         let totalFrames = Int(buffer.frameLength)
-        let sampleRate = buffer.format.sampleRate
-        let duration = Double(totalFrames) / sampleRate
         let barWidth = 40
         let updateInterval: TimeInterval = 0.05
 
         // Start a background thread to update the progress bar
         let progressQueue = DispatchQueue(label: "progress.bar.queue")
         var stopProgress = false
+        let stopQueue = DispatchQueue(label: "progress.stop.queue")
         progressQueue.async {
-            while !stopProgress {
+            while true {
+                var shouldStop = false
+                stopQueue.sync { shouldStop = stopProgress }
+                if shouldStop { break }
                 let nodeTime = self.playerNode.lastRenderTime
                 let playerTime = nodeTime.flatMap { self.playerNode.playerTime(forNodeTime: $0) }
                 let currentFrame = playerTime?.sampleTime ?? 0
@@ -590,7 +589,7 @@ public class MP3Player: NSObject {
 
         // Wait for playback to finish
         semaphore.wait()
-        stopProgress = true
+        stopQueue.sync { stopProgress = true }
         // Print 100% bar at the end
         let bar = String(repeating: "█", count: barWidth)
         print("\r[\(bar)] 100%\n")
