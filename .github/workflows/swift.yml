@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Install Swift
-      uses: swift-actions/setup-swift@v1
+      uses: SwiftyLab/setup-swift@v1
       with:
         swift-version: ${{ matrix.swift }}
     - name: Build
