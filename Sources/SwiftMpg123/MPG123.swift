@@ -4,18 +4,28 @@
 //  Created by Mateusz Kosikowski, PhD on 10/01/2020.
 //
 
-import Darwin // For SEEK_SET, SEEK_CUR, SEEK_END
+#if canImport(Darwin)
+    import Darwin // For SEEK_SET, SEEK_CUR, SEEK_END
+#elseif canImport(Glibc)
+    import Glibc // For SEEK_SET, SEEK_CUR, SEEK_END
+#endif
 import Foundation // For Data type
 import mpg123
 
+// MARK: - MPG123
+
 /// A Swift wrapper for the mpg123 library, providing MP3 decoding functionality.
 public class MPG123 {
-    private var handle: OpaquePointer?
+    // MARK: Properties
 
     // Audio format properties
     public private(set) var sampleRate: Int32 = 0
     public private(set) var channels: Int32 = 0
     public private(set) var encoding: Int32 = 0
+
+    private var handle: OpaquePointer?
+
+    // MARK: Lifecycle
 
     /// Initializes a new MPG123 instance.
     /// - Throws: `MPG123Error.initializationFailed` if library or handle initialization fails.
@@ -42,11 +52,13 @@ public class MPG123 {
         }
     }
 
+    // MARK: Static Functions
+
     /// Check if a specific feature is available in the mpg123 build.
     /// - Parameter feature: The feature to check for.
     /// - Returns: True if the feature is available, false otherwise.
     public static func hasFeature(_ feature: MPG123Feature) -> Bool {
-        return mpg123_feature2(feature.rawValue) != 0
+        mpg123_feature2(feature.rawValue) != 0
     }
 
     /// Get the library version information.
@@ -59,6 +71,8 @@ public class MPG123 {
         let patchValue = UInt(patch)
         return (major: major, minor: minor, patch: patchValue)
     }
+
+    // MARK: Functions
 
     /// Set a parameter on the mpg123 handle.
     /// - Parameters:
@@ -178,22 +192,25 @@ public class MPG123 {
         let result = mpg123_decode_frame64(h, &frameNumber, &audioData, &bytes)
 
         switch result {
-        case MPG123_OK.rawValue:
-            guard let audio = audioData else { return nil }
-            let data = Data(bytes: audio, count: bytes)
-            var frameInfo = mpg123_frameinfo2()
-            let infoResult = mpg123_info2(h, &frameInfo)
-            if infoResult == MPG123_OK.rawValue {
-                return (frameNumber: frameNumber, audioData: data, frameInfo: MPG123FrameInfo(from: frameInfo))
-            } else {
-                return (frameNumber: frameNumber, audioData: data, frameInfo: MPG123FrameInfo(from: frameInfo))
-            }
-        case MPG123_DONE.rawValue:
-            return nil
-        case MPG123_NEED_MORE.rawValue:
-            return nil
-        default:
-            throw MPG123Error.readFailed
+            case MPG123_OK.rawValue:
+                guard let audio = audioData else { return nil }
+                let data = Data(bytes: audio, count: bytes)
+                var frameInfo = mpg123_frameinfo2()
+                let infoResult = mpg123_info2(h, &frameInfo)
+                if infoResult == MPG123_OK.rawValue {
+                    return (frameNumber: frameNumber, audioData: data, frameInfo: MPG123FrameInfo(from: frameInfo))
+                } else {
+                    return (frameNumber: frameNumber, audioData: data, frameInfo: MPG123FrameInfo(from: frameInfo))
+                }
+
+            case MPG123_DONE.rawValue:
+                return nil
+
+            case MPG123_NEED_MORE.rawValue:
+                return nil
+
+            default:
+                throw MPG123Error.readFailed
         }
     }
 
@@ -405,7 +422,7 @@ public class MPG123 {
         let tagType = mpg123_id3(h, &id3v1, &meta)
         // Helper to convert fixed-size C array to String
         func cArrayToString<T>(_ array: T) -> String? {
-            return withUnsafePointer(to: array) {
+            withUnsafePointer(to: array) {
                 $0.withMemoryRebound(to: CChar.self, capacity: MemoryLayout<T>.size) {
                     let buffer = UnsafeBufferPointer(start: $0, count: MemoryLayout<T>.size)
                     if let nulIndex = buffer.firstIndex(of: 0) {

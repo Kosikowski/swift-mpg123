@@ -8,6 +8,8 @@ import AVFoundation
 import Foundation
 import SwiftMpg123
 
+// MARK: - EqualizerPreset
+
 /// Equalizer presets for the MP3 player demo
 public enum EqualizerPreset {
     case flat
@@ -19,13 +21,19 @@ public enum EqualizerPreset {
     case veryHigh
 }
 
+// MARK: - MP3Player
+
 /// MP3 Player that uses SwiftMpg123 for decoding and AVAudioPlayerNode for playback
 public class MP3Player: NSObject {
+    // MARK: Properties
+
     private var audioEngine: AVAudioEngine
     private var playerNode: AVAudioPlayerNode
     private var mpg123: MPG123?
     private var isPlaying = false
     private var audioBuffer: AVAudioPCMBuffer?
+
+    // MARK: Lifecycle
 
     override public init() {
         audioEngine = AVAudioEngine()
@@ -36,20 +44,7 @@ public class MP3Player: NSObject {
         setupAudioEngine()
     }
 
-    private func setupAudioEngine() {
-        // Add player node to audio engine
-        audioEngine.attach(playerNode)
-
-        // Connect player node to main mixer
-        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
-
-        // Prepare the audio engine
-        do {
-            try audioEngine.start()
-        } catch {
-            print("Failed to start audio engine: \(error)")
-        }
-    }
+    // MARK: Functions
 
     /// Play an MP3 file using SwiftMpg123 for decoding and AVAudioPlayerNode for playback
     /// - Parameter filePath: Path to the MP3 file
@@ -103,26 +98,13 @@ public class MP3Player: NSObject {
         }
     }
 
-    /// Setup equalizer with some example presets
-    private func setupEqualizer() {
-        guard let mpg123 = mpg123 else { return }
-
-        // Check if equalizer is available
-        if !MPG123.hasFeature(.equalizer) {
-            print("Equalizer not available in this mpg123 build")
-            return
-        }
-
-        print("Equalizer is available - user will choose preset from menu")
-    }
-
     /// Set equalizer band value
     /// - Parameters:
     ///   - channel: Channel to set (0 = left, 1 = right, 3 = both)
     ///   - band: Equalizer band (0-31)
     ///   - value: Equalizer value (-1.0 to 1.0)
     public func setEqualizer(channel: Int, band: Int, value: Float) {
-        guard let mpg123 = mpg123 else { return }
+        guard let mpg123 else { return }
         try? mpg123.setEqualizer(channel: Int32(channel), band: Int32(band), value: Double(value))
     }
 
@@ -132,13 +114,13 @@ public class MP3Player: NSObject {
     ///   - band: Equalizer band (0-31)
     /// - Returns: Equalizer value (-1.0 to 1.0)
     public func getEqualizer(channel: Int, band: Int) -> Float {
-        guard let mpg123 = mpg123 else { return 0.0 }
+        guard let mpg123 else { return 0.0 }
         return Float(mpg123.getEqualizer(channel: Int32(channel), band: Int32(band)))
     }
 
     /// Reset equalizer to flat response
     public func resetEqualizer() {
-        guard let mpg123 = mpg123 else { return }
+        guard let mpg123 else { return }
         try? mpg123.resetEqualizer()
         print("Equalizer reset to flat response")
     }
@@ -146,67 +128,114 @@ public class MP3Player: NSObject {
     /// Apply a preset equalizer configuration
     /// - Parameter preset: The preset to apply
     public func applyEqualizerPreset(_ preset: EqualizerPreset) {
-        guard let mpg123 = mpg123 else { return }
+        guard let mpg123 else { return }
 
         switch preset {
-        case .flat:
-            resetEqualizer()
-        case .bassBoost:
-            // Bass boost preset
-            for band in 0 ..< 8 {
-                let value = Double(band) * 0.1
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied bass boost preset")
-        case .trebleBoost:
-            // Treble boost preset
-            for band in 24 ..< 32 {
-                let value = Double(32 - band) * 0.1
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied treble boost preset")
-        case .vocalBoost:
-            // Vocal boost preset (mid-range enhancement)
-            for band in 8 ..< 16 {
-                let value = 0.2
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied vocal boost preset")
-        case .custom:
-            // Custom preset (example: treble boost)
-            for band in 24 ..< 32 {
-                let value = Double(32 - band) * 0.1
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied custom preset (treble boost)")
-        case .veryLow:
-            // Very low equalizer preset
-            for band in 0..<32 {
-                let value = -0.9 // Very strong reduction
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied very low equalizer preset")
-        case .veryHigh:
-            // Very high equalizer preset
-            for band in 0..<32 {
-                let value = 0.9 // Very strong enhancement
-                try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
-                try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
-            }
-            print("Applied very high equalizer preset")
+            case .flat:
+                resetEqualizer()
+
+            case .bassBoost:
+                // Bass boost preset
+                for band in 0 ..< 8 {
+                    let value = Double(band) * 0.1
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied bass boost preset")
+
+            case .trebleBoost:
+                // Treble boost preset
+                for band in 24 ..< 32 {
+                    let value = Double(32 - band) * 0.1
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied treble boost preset")
+
+            case .vocalBoost:
+                // Vocal boost preset (mid-range enhancement)
+                for band in 8 ..< 16 {
+                    let value = 0.2
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied vocal boost preset")
+
+            case .custom:
+                // Custom preset (example: treble boost)
+                for band in 24 ..< 32 {
+                    let value = Double(32 - band) * 0.1
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied custom preset (treble boost)")
+
+            case .veryLow:
+                // Very low equalizer preset
+                for band in 0 ..< 32 {
+                    let value = -0.9 // Very strong reduction
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied very low equalizer preset")
+
+            case .veryHigh:
+                // Very high equalizer preset
+                for band in 0 ..< 32 {
+                    let value = 0.9 // Very strong enhancement
+                    try? mpg123.setEqualizer(channel: 0, band: Int32(band), value: value)
+                    try? mpg123.setEqualizer(channel: 1, band: Int32(band), value: value)
+                }
+                print("Applied very high equalizer preset")
         }
+    }
+
+    /// Stop playback
+    public func stop() {
+        playerNode.stop()
+        isPlaying = false
+    }
+
+    /// Pause playback
+    public func pause() {
+        playerNode.pause()
+    }
+
+    /// Resume playback
+    public func resume() {
+        playerNode.play()
+    }
+
+    private func setupAudioEngine() {
+        // Add player node to audio engine
+        audioEngine.attach(playerNode)
+
+        // Connect player node to main mixer
+        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: nil)
+
+        // Prepare the audio engine
+        do {
+            try audioEngine.start()
+        } catch {
+            print("Failed to start audio engine: \(error)")
+        }
+    }
+
+    /// Setup equalizer with some example presets
+    private func setupEqualizer() {
+        guard MPG123.hasFeature(.equalizer) else {
+            print("Equalizer not available in this mpg123 build")
+            return
+        }
+
+        print("Equalizer is available - user will choose preset from menu")
     }
 
     /// Decode the entire MP3 file into raw audio data
     /// - Returns: Raw audio data as Data
     /// - Throws: MPG123Error if decoding fails
     private func decodeMP3File() throws -> Data {
-        guard let mpg123 = mpg123 else {
+        guard let mpg123 else {
             throw MPG123Error.invalidHandle
         }
 
@@ -223,7 +252,7 @@ public class MP3Player: NSObject {
     /// - Parameter audioData: Raw audio data
     /// - Throws: Error if buffer creation fails or encoding is not supported
     private func createAudioBuffer(from audioData: Data) throws {
-        guard let mpg123 = mpg123 else {
+        guard let mpg123 else {
             throw MPG123Error.invalidHandle
         }
 
@@ -259,18 +288,30 @@ public class MP3Player: NSObject {
     /// Get bytes per sample for given encoding
     private func getBytesPerSample(encoding: Int32) throws -> Int {
         switch encoding {
-        case 0x01, 0x02, 0x04, 0x08: // MPG123_ENC_UNSIGNED_8, SIGNED_8, ULAW_8, ALAW_8
-            return 1
-        case 0x60, 0xD0: // MPG123_ENC_UNSIGNED_16, SIGNED_16
-            return 2
-        case 0x6000, 0x5000: // MPG123_ENC_UNSIGNED_24, SIGNED_24
-            return 3
-        case 0x2000, 0x1100, 0x200: // MPG123_ENC_UNSIGNED_32, SIGNED_32, FLOAT_32
-            return 4
-        case 0x400: // MPG123_ENC_FLOAT_64
-            return 8
-        default:
-            throw NSError(domain: "MP3Player", code: -3, userInfo: [NSLocalizedDescriptionKey: "Unsupported encoding: 0x\(String(format: "%02X", encoding))"])
+            case 0x01,
+                 0x02,
+                 0x04,
+                 0x08: // MPG123_ENC_UNSIGNED_8, SIGNED_8, ULAW_8, ALAW_8
+                return 1
+
+            case 0x60,
+                 0xD0: // MPG123_ENC_UNSIGNED_16, SIGNED_16
+                return 2
+
+            case 0x6000,
+                 0x5000: // MPG123_ENC_UNSIGNED_24, SIGNED_24
+                return 3
+
+            case 0x2000,
+                 0x1100,
+                 0x200: // MPG123_ENC_UNSIGNED_32, SIGNED_32, FLOAT_32
+                return 4
+
+            case 0x400: // MPG123_ENC_FLOAT_64
+                return 8
+
+            default:
+                throw NSError(domain: "MP3Player", code: -3, userInfo: [NSLocalizedDescriptionKey: "Unsupported encoding: 0x\(String(format: "%02X", encoding))"])
         }
     }
 
@@ -280,33 +321,45 @@ public class MP3Player: NSObject {
             guard let baseAddress = bytes.baseAddress else { return }
 
             switch encoding {
-            case 0x01: // MPG123_ENC_UNSIGNED_8
-                convertUnsigned8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x02: // MPG123_ENC_SIGNED_8
-                convertSigned8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x04: // MPG123_ENC_ULAW_8
-                convertULaw8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x08: // MPG123_ENC_ALAW_8
-                convertALaw8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x60: // MPG123_ENC_UNSIGNED_16
-                convertUnsigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0xD0: // MPG123_ENC_SIGNED_16
-                convertSigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x6000: // MPG123_ENC_UNSIGNED_24
-                convertUnsigned24Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x5000: // MPG123_ENC_SIGNED_24
-                convertSigned24Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x2000: // MPG123_ENC_UNSIGNED_32
-                convertUnsigned32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x1100: // MPG123_ENC_SIGNED_32
-                convertSigned32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x200: // MPG123_ENC_FLOAT_32
-                convertFloat32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            case 0x400: // MPG123_ENC_FLOAT_64
-                convertFloat64Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
-            default:
-                print("Warning: Unknown encoding 0x\(String(format: "%02X", encoding)), treating as signed 16-bit")
-                convertSigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+                case 0x01: // MPG123_ENC_UNSIGNED_8
+                    convertUnsigned8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x02: // MPG123_ENC_SIGNED_8
+                    convertSigned8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x04: // MPG123_ENC_ULAW_8
+                    convertULaw8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x08: // MPG123_ENC_ALAW_8
+                    convertALaw8Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x60: // MPG123_ENC_UNSIGNED_16
+                    convertUnsigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0xD0: // MPG123_ENC_SIGNED_16
+                    convertSigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x6000: // MPG123_ENC_UNSIGNED_24
+                    convertUnsigned24Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x5000: // MPG123_ENC_SIGNED_24
+                    convertSigned24Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x2000: // MPG123_ENC_UNSIGNED_32
+                    convertUnsigned32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x1100: // MPG123_ENC_SIGNED_32
+                    convertSigned32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x200: // MPG123_ENC_FLOAT_32
+                    convertFloat32Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                case 0x400: // MPG123_ENC_FLOAT_64
+                    convertFloat64Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
+
+                default:
+                    print("Warning: Unknown encoding 0x\(String(format: "%02X", encoding)), treating as signed 16-bit")
+                    convertSigned16Bit(baseAddress: baseAddress, channels: channels, frameCount: frameCount, buffer: buffer)
             }
         }
     }
@@ -507,16 +560,18 @@ public class MP3Player: NSObject {
 
         // Progress bar setup
         let totalFrames = Int(buffer.frameLength)
-        let sampleRate = buffer.format.sampleRate
-        let duration = Double(totalFrames) / sampleRate
         let barWidth = 40
         let updateInterval: TimeInterval = 0.05
 
         // Start a background thread to update the progress bar
         let progressQueue = DispatchQueue(label: "progress.bar.queue")
         var stopProgress = false
+        let stopQueue = DispatchQueue(label: "progress.stop.queue")
         progressQueue.async {
-            while !stopProgress {
+            while true {
+                var shouldStop = false
+                stopQueue.sync { shouldStop = stopProgress }
+                if shouldStop { break }
                 let nodeTime = self.playerNode.lastRenderTime
                 let playerTime = nodeTime.flatMap { self.playerNode.playerTime(forNodeTime: $0) }
                 let currentFrame = playerTime?.sampleTime ?? 0
@@ -534,26 +589,10 @@ public class MP3Player: NSObject {
 
         // Wait for playback to finish
         semaphore.wait()
-        stopProgress = true
+        stopQueue.sync { stopProgress = true }
         // Print 100% bar at the end
         let bar = String(repeating: "█", count: barWidth)
         print("\r[\(bar)] 100%\n")
         isPlaying = false
-    }
-
-    /// Stop playback
-    public func stop() {
-        playerNode.stop()
-        isPlaying = false
-    }
-
-    /// Pause playback
-    public func pause() {
-        playerNode.pause()
-    }
-
-    /// Resume playback
-    public func resume() {
-        playerNode.play()
     }
 }

@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift-mpg123}",
+            "name": "Debug MP3PlayerDemo",
+            "program": "${workspaceFolder:swift-mpg123}/.build/debug/MP3PlayerDemo",
+            "preLaunchTask": "swift: Build Debug MP3PlayerDemo"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:swift-mpg123}",
+            "name": "Release MP3PlayerDemo",
+            "program": "${workspaceFolder:swift-mpg123}/.build/release/MP3PlayerDemo",
+            "preLaunchTask": "swift: Build Release MP3PlayerDemo"
+        }
+    ]
+}
