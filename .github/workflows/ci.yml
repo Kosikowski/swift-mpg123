@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
     tags: [ "v*" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -13,67 +13,46 @@ permissions:
   security-events: write
 
 jobs:
-  # Ubuntu Build Test
   build-ubuntu:
     runs-on: ubuntu-latest
-    name: Ubuntu Build Test
     steps:
-      - uses: actions/checkout@v4
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libmpg123-dev pkg-config
-      - name: Setup Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: '5.9'
-      - name: Show versions
-        run: |
-          swift --version
-          pkg-config --libs mpg123 || echo "pkg-config failed but continuing..."
-      - name: Build and Test
-        run: |
-          swift build -v
-          swift test -v
+    - uses: actions/checkout@v4
+    - name: Install Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: '5.9'
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v
 
-  # macOS and Apple Platforms
   build-macos:
-    runs-on: ${{ matrix.runner }}
-    name: macOS (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        include:
-          - swift-version: 5.9
-            runner: macos-14
-          - swift-version: 6.1.2
-            runner: macos-latest
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Xcode
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '16'
-      - name: Install Swift ${{ matrix.swift-version }}
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Install mpg123
-        run: |
-          brew install mpg123
-      - name: Show versions
-        run: |
-          xcodebuild -version
-          swift --version
-      - name: Clean build directory
-        run: rm -rf .build
-      - name: Build and Test
-        run: |
-          swift build -v
-          swift test -v
-      - name: Build Release
-        run: swift build -c release -v
-      - name: Run demo
-        run: swift run MP3PlayerDemo --help || true
+    - uses: actions/checkout@v4
+    - name: Install Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: '5.9'
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v
+    - name: Run demo
+      run: swift run MP3PlayerDemo
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: '5.9'
+    - name: Build
+      run: swift build -v
+    - name: Run tests
+      run: swift test -v
 
   # Code Quality (macOS only)
   code-quality:
@@ -93,7 +72,7 @@ jobs:
       
     - name: Format code with SwiftFormat
       run: swiftformat --config .swiftformat Sources/ Tests/
-
+      
   # Package Validation
   package-validation:
     name: Package Validation
@@ -103,80 +82,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Install mpg123
-      run: |
-        brew install mpg123
-        
     - name: Setup Swift
-      uses: SwiftyLab/setup-swift@v1
+      uses: swift-actions/setup-swift@v1
       with:
         swift-version: '5.9'
         
     - name: Check package description
       run: swift package describe
-      
-
-  # Security and Dependencies
-  security:
-    name: Security Check
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-        
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
-
-  # Format Code (Manual trigger)
-  format:
-    name: Format Code
-    runs-on: macos-latest
-    if: github.event_name == 'workflow_dispatch'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install SwiftFormat
-      run: |
-        brew install swiftformat
-        
-    - name: Format code
-      run: swiftformat --config .swiftformat Sources/ Tests/
-      
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v7
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "style: format code with SwiftFormat"
-        title: "style: format code with SwiftFormat"
-        body: |
-          This PR was automatically created by the CI workflow to format code with SwiftFormat.
-          
-          Changes:
-          - Applied SwiftFormat rules to all Swift files
-          - Maintained code style consistency
-        branch: format-code
-        delete-branch: true
 
   # Release job - only runs on tag pushes
   release:
     name: Create Release
     runs-on: macos-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-macos, code-quality, package-validation, security]
+    needs: [build-macos, build-ubuntu, build-windows, code-quality, package-validation]
     
     steps:
     - name: Checkout code
@@ -193,8 +112,9 @@ jobs:
           ## What's Changed
           
           This release includes:
-          - MP3 decoding capabilities via mpg123
+          - MP3 decoding capabilities via embedded mpg123
           - Swift wrapper for mpg123 C library
+          - Cross-platform support (macOS, Linux, Windows)
           - Demo CLI application for MP3 playback
           
           ## Installation

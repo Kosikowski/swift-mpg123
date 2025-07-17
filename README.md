@@ -99,9 +99,37 @@ cd swift-mpg123
 ```
 
 3. Build the package:
-```bash
-swift build
-```
+
+   **Standard Build (macOS/Apple):**
+   ```bash
+   swift build
+   ```
+
+   **Platform-Specific Builds:**
+
+   The package supports building for different platforms with appropriate file inclusion:
+
+   **For Apple (macOS/iOS):**
+   ```bash
+   BUILD_MPG123_FOR_APPLE=1 swift scripts/build-platform.swift
+   ```
+
+   **For Linux:**
+   ```bash
+   BUILD_MPG123_FOR_LINUX=1 swift scripts/build-platform.swift
+   ```
+
+   **For Windows:**
+   ```bash
+   BUILD_MPG123_FOR_WINDOWS=1 swift scripts/build-platform.swift
+   ```
+
+   **Alternative: Bash Script**
+   ```bash
+   BUILD_MPG123_FOR_APPLE=1 ./scripts/build-platform.sh
+   BUILD_MPG123_FOR_LINUX=1 ./scripts/build-platform.sh
+   BUILD_MPG123_FOR_WINDOWS=1 ./scripts/build-platform.sh
+   ```
 
 4. Run tests:
 ```bash
