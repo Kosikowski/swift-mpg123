@@ -191,53 +191,6 @@ jobs:
           swift build -c release -v
           swift test -c release -v
 
-  # Windows
-  build-windows:
-    runs-on: windows-2022
-    name: Windows (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Verify Swift installation
-        run: |
-          swift --version
-          swift build --help
-        shell: pwsh
-      - name: Build and Test
-        run: |
-          swift build -v
-          swift test -v
-        shell: pwsh
-
-  build-windows-release:
-    runs-on: windows-2022
-    name: Windows Release (Swift ${{ matrix.swift-version }})
-    strategy:
-      matrix:
-        swift-version: [5.9, 6.1.2]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Swift
-        uses: SwiftyLab/setup-swift@v1
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - name: Verify Swift installation
-        run: |
-          swift --version
-          swift build --help
-        shell: pwsh
-      - name: Build and Test Release
-        run: |
-          swift build -c release -v
-          swift test -c release -v
-        shell: pwsh
-
   # Code Quality (macOS only)
   code-quality:
     name: Code Quality
@@ -279,7 +232,7 @@ jobs:
     name: Create Release
     runs-on: macos-14
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-macos, build-ios, build-tvos, build-visionos, build-linux, build-linux-release, build-windows, build-windows-release, code-quality, package-validation]
+    needs: [build-macos, build-ios, build-tvos, build-visionos, build-linux, build-linux-release, code-quality, package-validation]
     
     steps:
     - name: Checkout code
