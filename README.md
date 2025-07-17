@@ -47,18 +47,43 @@ See [docs/MP3PlayerDemo.md](docs/MP3PlayerDemo.md) for build and usage instructi
 
 ### Prerequisites
 
-- **macOS 12.0+** (currently supported platform)
-- **Swift 5.6+**
-- **Xcode 15.0+** (for development)
-- **Homebrew** (for installing mpg123)
+- **macOS 12.0+** (primary development platform)
+- **Linux** (Ubuntu 20.04+)
+- **Windows** (Windows 10/11 with Swift support)
+- **Swift 5.9+**
+- **Xcode 15.0+** (for macOS development)
+- **Homebrew** (for installing mpg123 on macOS)
+
+### Development Tools
+
+For development, you'll also need:
+- **SwiftFormat** - Code formatting
+- **Pre-commit** - Git hooks for code quality
+
+Install them with:
+```bash
+brew install swiftformat pre-commit
+```
 
 ### Required System Libraries
 
 The package depends on the mpg123 library, which must be installed on your system:
 
+**macOS:**
 ```bash
-# Install mpg123 using Homebrew
 brew install mpg123
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install libmpg123-dev pkg-config
+```
+
+**Windows:**
+```bash
+# Note: mpg123 installation on Windows may require manual setup
+# Consider using vcpkg or manual compilation
 ```
 
 ## Installation
@@ -86,12 +111,17 @@ git clone https://github.com/yourusername/swift-mpg123.git
 cd swift-mpg123
 ```
 
-2. Build the package:
+2. Set up development environment (optional but recommended):
+```bash
+./scripts/setup-dev.sh
+```
+
+3. Build the package:
 ```bash
 swift build
 ```
 
-3. Run tests:
+4. Run tests:
 ```bash
 swift test
 ```
@@ -108,12 +138,90 @@ swift-mpg123/
 │   │       ├── mpg123.h
 │   │       ├── fmt123.h
 │   │       └── ...
-│   └── SwiftMpg123/          # Swift wrapper
-│       └── SwiftMPG.swift    # Main Swift API
-└── Tests/
-    └── SwiftMpg123Tests/     # Unit tests
-    └── SwiftMPGTests.swift
+│   ├── SwiftMpg123/          # Swift wrapper
+│   │   └── SwiftMPG.swift    # Main Swift API
+│   └── MP3PlayerDemo/        # Demo application
+│       ├── main.swift
+│       └── MP3Player.swift
+├── Tests/
+│   └── SwiftMpg123Tests/     # Unit tests
+│       └── MPG123Tests.swift
+├── .github/
+│   ├── workflows/            # CI/CD workflows
+│   │   └── ci.yml
+│   └── dependabot.yml        # Dependency updates
+├── scripts/
+│   └── setup-dev.sh          # Development setup script
+├── .swiftformat              # SwiftFormat configuration
+└── .pre-commit-config.yaml   # Pre-commit hooks
 ```
+
+## Development Workflow
+
+### Code Quality
+
+This project uses automated code quality tools:
+
+- **SwiftFormat** - Automatically formats code
+- **Pre-commit hooks** - Run quality checks before commits
+
+### CI/CD Pipeline
+
+The project includes a comprehensive CI/CD pipeline that runs on:
+
+- **macOS** - Build, test, and validate on latest macOS
+- **Ubuntu** - Build and test on Linux
+- **Multiple Swift versions** - Test compatibility with Swift 5.9 and 6.1.2
+- **Cross-platform support** - macOS, Linux, Windows
+- **Code quality checks** - SwiftFormat validation
+- **Security scanning** - Vulnerability scanning with Trivy
+- **Package validation** - Verify package structure and dependencies
+- **Automated releases** - Create GitHub releases on version tags
+
+### Development Setup
+
+1. **Quick setup** (recommended):
+   ```bash
+   ./scripts/setup-dev.sh
+   ```
+
+2. **Manual setup**:
+   ```bash
+   # Install dependencies
+   brew install mpg123 swiftformat pre-commit
+   
+   # Install pre-commit hooks
+   pre-commit install
+   ```
+
+3. **Format code**:
+   ```bash
+   swiftformat --config .swiftformat Sources/ Tests/
+   ```
+
+### Contributing
+
+When contributing to this project:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run the development tools:
+   ```bash
+   swift build
+   swift test
+   swiftformat --config .swiftformat Sources/ Tests/
+   ```
+5. Commit your changes (pre-commit hooks will run automatically)
+6. Push and create a pull request
+
+The CI pipeline will automatically:
+- Build and test your changes on macOS, Linux, and Windows
+- Test with Swift 5.9 and 6.1.2
+- Check code quality with SwiftFormat
+- Validate the package structure
+- Run security scans
+- Create releases on version tags
 
 ## Configuration Details
 

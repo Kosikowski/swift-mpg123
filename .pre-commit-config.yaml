@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: swiftformat
+        name: SwiftFormat
+        entry: swiftformat
+        language: system
+        types: [swift]
+        args: [--config, .swiftformat]
+        files: \.(swift)$
+        exclude: |
+          (?x)^(
+              Sources/mpg123/|
+              Tests/|
+              \.build/|
+              Package\.swift
+          )$ 
