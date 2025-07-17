@@ -117,6 +117,8 @@ targets.insert(
             "src/libsyn123",
             // Exclude libout123 directory (has POSIX dependencies)
             "src/libout123",
+            // Exclude files that include mpg123lib_intern.h (which includes compat.h)
+            "src/libmpg123/tabinit.c",
             "src/libout123/modules/pulse.c", "src/libout123/modules/alsa.c", "src/libout123/modules/oss.c", "src/libout123/modules/tinyalsa.c", "src/libout123/modules/sndio.c", "src/libout123/modules/esd.c", "src/libout123/modules/nas.c", "src/libout123/modules/arts.c", "src/libout123/modules/jack.c",
             // Only include win32, win32_wasapi, etc. for Windows
             // Exclude all other platform modules
