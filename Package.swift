@@ -119,6 +119,8 @@ targets.insert(
             "src/libout123",
             // Exclude files that include mpg123lib_intern.h (which includes compat.h)
             "src/libmpg123/tabinit.c",
+            // Exclude ARM64 NEON assembly files (not compatible with x86_64)
+            "src/libmpg123/synth_neon64_float.S", "src/libmpg123/synth_neon64.S", "src/libmpg123/synth_stereo_neon64_s32.S", "src/libmpg123/synth_stereo_neon64_accurate.S", "src/libmpg123/dct64_neon64_float.S", "src/libmpg123/dct64_neon64.S", "src/libmpg123/synth_stereo_neon64.S", "src/libmpg123/synth_neon64_s32.S", "src/libmpg123/synth_stereo_neon64_float.S",
             "src/libout123/modules/pulse.c", "src/libout123/modules/alsa.c", "src/libout123/modules/oss.c", "src/libout123/modules/tinyalsa.c", "src/libout123/modules/sndio.c", "src/libout123/modules/esd.c", "src/libout123/modules/nas.c", "src/libout123/modules/arts.c", "src/libout123/modules/jack.c",
             // Only include win32, win32_wasapi, etc. for Windows
             // Exclude all other platform modules
