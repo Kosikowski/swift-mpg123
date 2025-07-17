@@ -13,6 +13,29 @@ permissions:
   security-events: write
 
 jobs:
+  # Ubuntu Build Test
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    name: Ubuntu Build Test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmpg123-dev pkg-config
+      - name: Setup Swift
+        uses: SwiftyLab/setup-swift@v1
+        with:
+          swift-version: '5.9'
+      - name: Show versions
+        run: |
+          swift --version
+          pkg-config --libs mpg123 || echo "pkg-config failed but continuing..."
+      - name: Build and Test
+        run: |
+          swift build -v
+          swift test -v
+
   # macOS and Apple Platforms
   build-macos:
     runs-on: ${{ matrix.runner }}
