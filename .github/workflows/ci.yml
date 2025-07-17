@@ -71,7 +71,7 @@ jobs:
       - name: Show Swift version
         run: swift --version
       - name: Build library only
-        run: swift build -v --product SwiftMpg123
+        run: swift build -v --target SwiftMpg123
       - name: Run tests
         run: swift test -v
 
@@ -94,7 +94,7 @@ jobs:
       - name: Show Swift version
         run: swift --version
       - name: Build library only (release)
-        run: swift build -c release -v --product SwiftMpg123
+        run: swift build -c release -v --target SwiftMpg123
       - name: Run tests (release)
         run: swift test -c release -v
 
