@@ -43,6 +43,19 @@ A full-featured demo is included to show how to use SwiftMpg123 for real MP3 pla
 
 See [docs/MP3PlayerDemo.md](docs/MP3PlayerDemo.md) for build and usage instructions.
 
+## Embedded mpg123 Library
+
+This package embeds **mpg123 version 1.33.0** from [mpg123.de](https://www.mpg123.de). The mpg123 library is a fast, high-quality MPEG 1.0/2.0/2.5 audio decoder for layers 1, 2, and 3 (most commonly MPEG 1.0 layer 3 aka MP3).
+
+### Library Features
+- **High Performance**: Optimized assembly code for x86, x86-64, and ARM architectures
+- **Multiple Output Formats**: 8-bit, 16-bit, 32-bit integer and floating-point output
+- **Comprehensive Support**: MPEG 1.0/2.0/2.5, layers 1/2/3, VBR, gapless playback
+- **Cross-Platform**: Works on GNU/Linux, macOS, BSD, Solaris, AIX, HPUX, and more
+
+### File Exclusions
+The package selectively includes only the core MP3 decoding functionality while excluding command-line tools, platform-specific modules, and external dependencies. See [docs/EXCLUSIONS.md](docs/EXCLUSIONS.md) for detailed documentation of what files are included/excluded and why.
+
 ## System Requirements
 
 ### Prerequisites
