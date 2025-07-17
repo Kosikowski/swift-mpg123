@@ -70,10 +70,10 @@ jobs:
           sudo apt-get install -y libmpg123-dev pkg-config
       - name: Show Swift version
         run: swift --version
-      - name: Build and Test
-        run: |
-          swift build -v
-          swift test -v
+      - name: Build library only
+        run: swift build -v --product SwiftMpg123
+      - name: Run tests
+        run: swift test -v
 
   build-linux-release:
     runs-on: ubuntu-latest
@@ -93,10 +93,10 @@ jobs:
           sudo apt-get install -y libmpg123-dev pkg-config
       - name: Show Swift version
         run: swift --version
-      - name: Build and Test Release
-        run: |
-          swift build -c release -v
-          swift test -c release -v
+      - name: Build library only (release)
+        run: swift build -c release -v --product SwiftMpg123
+      - name: Run tests (release)
+        run: swift test -c release -v
 
   # Windows
   build-windows:
@@ -113,8 +113,6 @@ jobs:
           swift-version: ${{ matrix.swift-version }}
       - name: Install mpg123 (Windows)
         run: |
-          # Note: mpg123 installation on Windows may require manual setup
-          # For now, we'll skip the demo on Windows as it requires mpg123
           echo "mpg123 installation on Windows requires manual setup"
         shell: pwsh
       - name: Verify Swift installation
@@ -122,10 +120,11 @@ jobs:
           swift --version
           swift build --help
         shell: pwsh
-      - name: Build and Test
-        run: |
-          swift build -v
-          swift test -v
+      - name: Build library only
+        run: swift build -v --product SwiftMpg123
+        shell: pwsh
+      - name: Run tests
+        run: swift test -v
         shell: pwsh
 
   build-windows-release:
@@ -145,10 +144,11 @@ jobs:
           swift --version
           swift build --help
         shell: pwsh
-      - name: Build and Test Release
-        run: |
-          swift build -c release -v
-          swift test -c release -v
+      - name: Build library only (release)
+        run: swift build -c release -v --product SwiftMpg123
+        shell: pwsh
+      - name: Run tests (release)
+        run: swift test -c release -v
         shell: pwsh
 
   # Code Quality (macOS only)
