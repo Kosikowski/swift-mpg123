@@ -50,7 +50,6 @@ See [docs/MP3PlayerDemo.md](docs/MP3PlayerDemo.md) for build and usage instructi
 - **macOS 12.0+** (primary development platform)
 - **Swift 5.9+**
 - **Xcode 15.0+** (for macOS development)
-- **Homebrew** (for installing mpg123 on macOS)
 
 ### Development Tools
 
@@ -63,14 +62,11 @@ Install them with:
 brew install swiftformat pre-commit
 ```
 
-### Required System Libraries
+### Embedded Library
 
-The package depends on the mpg123 library, which must be installed on your system:
+This package embeds the mpg123 library directly, so no system installation is required. The package is self-contained and works on macOS, Linux, and Windows.
 
-**macOS:**
-```bash
-brew install mpg123
-```
+**Note:** Previous versions required system installation of mpg123. This version embeds the library for better portability.
 
 ## Installation
 
@@ -170,8 +166,8 @@ The project includes a comprehensive CI/CD pipeline that runs on:
 
 2. **Manual setup**:
    ```bash
-   # Install dependencies
-   brew install mpg123 swiftformat pre-commit
+   # Install development tools
+   brew install swiftformat pre-commit
    
    # Install pre-commit hooks
    pre-commit install
@@ -207,16 +203,17 @@ The CI pipeline will automatically:
 
 ## Configuration Details
 
-### System Library Integration
+### Embedded Library Integration
 
-The package uses Swift's system library target to integrate with the installed mpg123 library:
+The package embeds the mpg123 library directly as a C target:
 
 ```swift
-.systemLibrary(
+.target(
     name: "mpg123",
-    providers: [
-        .brew(["mpg123"])
-    ]
+    path: "Sources/mpg123",
+    exclude: ["module.modulemap"],
+    sources: ["src"],
+    publicHeadersPath: "include"
 )
 ```
 
@@ -225,6 +222,7 @@ The package uses Swift's system library target to integrate with the installed m
 The package includes the necessary mpg123 header files in `Sources/mpg123/include/`:
 - `mpg123.h` - Main library header
 - `fmt123.h` - Format utilities
+- `config.h` - Platform-specific configuration
 - Additional dependency headers
 
 ### Module Map
@@ -232,12 +230,19 @@ The package includes the necessary mpg123 header files in `Sources/mpg123/includ
 The module map (`Sources/mpg123/module.modulemap`) configures the C library for Swift interop:
 
 ```modulemap
-module mpg123 [system] {
+module mpg123 {
   header "include/mpg123.h"
-  link "mpg123"
   export *
 }
 ```
+
+### Source Code
+
+The embedded mpg123 source code is located in `Sources/mpg123/src/` and includes:
+- `libmpg123/` - Core MP3 decoding library
+- `libout123/` - Audio output library
+- `libsyn123/` - Synthesis library
+- Platform-specific optimizations and modules
 
 ## Usage
 
@@ -606,17 +611,17 @@ swift test
 
 #### Common Build Issues
 
-1. **"mpg123.h not found"**
-   - Ensure mpg123 is installed: `brew install mpg123`
-   - Verify installation: `brew list mpg123`
+1. **"Cannot find mpg123 library"**
+   - This package embeds mpg123 directly, so no system installation is needed
+   - If you see this error, it may be from an old version that required system mpg123
 
-2. **"Cannot find mpg123 library"**
-   - Check that mpg123 is properly linked: `brew --prefix mpg123`
-   - Verify the library exists: `ls /opt/homebrew/opt/mpg123/lib/`
-
-3. **Type conversion errors**
+2. **Type conversion errors**
    - The package handles C/Swift interop automatically
    - Ensure you're using the provided Swift API, not calling C functions directly
+
+3. **Platform-specific issues**
+   - The embedded mpg123 library is configured for macOS, Linux, and Windows
+   - If you encounter platform-specific issues, please report them
 
 #### Platform Support
 
@@ -640,6 +645,10 @@ Future support planned:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+**Note:** This package includes the [mpg123](https://www.mpg123.de/) library, which is licensed under the GNU Lesser General Public License v2.1 (LGPL-2.1). The embedded mpg123 source code and its modifications are subject to the LGPL-2.1 license terms.
+
+By using this package, you agree to the terms of both licenses. See the LICENSE file for the complete LGPL-2.1 text and AUTHORS file for mpg123 contributors.
 
 ## Acknowledgments
 
