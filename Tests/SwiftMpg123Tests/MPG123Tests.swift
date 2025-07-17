@@ -8,22 +8,27 @@ import Foundation
 import XCTest
 @testable import SwiftMpg123
 
+// MARK: - MPG123Tests
+
 final class MPG123Tests: XCTestCase {
-    
+    // MARK: Overridden Functions
+
     // MARK: - Setup and Teardown
-    
+
     override func setUp() {
         super.setUp()
         // Any setup code can go here
     }
-    
+
     override func tearDown() {
         // Any cleanup code can go here
         super.tearDown()
     }
-    
+
+    // MARK: Functions
+
     // MARK: - Library Initialization Tests
-    
+
     func testLibraryInitialization() throws {
         // Test library version
         let version = MPG123.version()
@@ -35,9 +40,9 @@ final class MPG123Tests: XCTestCase {
         XCTAssertTrue(MPG123.hasFeature(.decodeLayer3)) // Should be available
         XCTAssertTrue(MPG123.hasFeature(.output16Bit)) // Should be available
     }
-    
+
     // MARK: - MPG123 Instance Tests
-    
+
     func testMPG123Instance() throws {
         let mpg = try MPG123()
 
@@ -52,9 +57,9 @@ final class MPG123Tests: XCTestCase {
         let (flagValue, _) = try mpg.getParameter(.flags)
         XCTAssertEqual(flagValue, Int(MPG123Flag.gapless.rawValue))
     }
-    
+
     // MARK: - Format Support Tests
-    
+
     func testFormatSupport() throws {
         let mpg = try MPG123()
 
@@ -66,9 +71,9 @@ final class MPG123Tests: XCTestCase {
         let support8Bit = mpg.formatSupport(rate: 44100, encoding: 0x01) // MPG123_ENC_UNSIGNED_8
         XCTAssertGreaterThanOrEqual(support8Bit, 0) // Should be non-negative
     }
-    
+
     // MARK: - Equalizer Tests
-    
+
     func testEqualizer() throws {
         let mpg = try MPG123()
 
@@ -94,9 +99,9 @@ final class MPG123Tests: XCTestCase {
             XCTAssertTrue(error is MPG123Error)
         }
     }
-    
+
     // MARK: - Volume Control Tests
-    
+
     func testVolumeControl() throws {
         let mpg = try MPG123()
 
@@ -115,9 +120,9 @@ final class MPG123Tests: XCTestCase {
         let (finalBase, _, _) = try mpg.getVolume()
         XCTAssertGreaterThan(finalBase, 0.0) // Should still be positive
     }
-    
+
     // MARK: - Feed Mode Tests
-    
+
     func testFeedMode() throws {
         let mpg = try MPG123()
 
@@ -130,9 +135,9 @@ final class MPG123Tests: XCTestCase {
 
         mpg.close()
     }
-    
+
     // MARK: - Frame Decoding Tests
-    
+
     func testFrameDecoding() throws {
         let mpg = try MPG123()
 
@@ -148,9 +153,9 @@ final class MPG123Tests: XCTestCase {
             XCTAssertTrue(error is MPG123Error)
         }
     }
-    
+
     // MARK: - Seeking Tests
-    
+
     func testSeeking() throws {
         let mpg = try MPG123()
 
@@ -184,9 +189,9 @@ final class MPG123Tests: XCTestCase {
             XCTAssertTrue(error is MPG123Error)
         }
     }
-    
+
     // MARK: - Error Handling Tests
-    
+
     func testErrorHandling() throws {
         // Test error descriptions
         let errors: [MPG123Error] = [
@@ -207,9 +212,9 @@ final class MPG123Tests: XCTestCase {
             // The exact content might vary depending on the library version
         }
     }
-    
+
     // MARK: - Audio Stream Tests
-    
+
     func testAudioStream() throws {
         let mpg = try MPG123()
 
@@ -222,9 +227,9 @@ final class MPG123Tests: XCTestCase {
         let firstChunk = iterator.next()
         XCTAssertNil(firstChunk)
     }
-    
+
     // MARK: - Metadata Tests
-    
+
     func testMetadata() throws {
         let mpg = try MPG123()
 
@@ -232,9 +237,9 @@ final class MPG123Tests: XCTestCase {
         let metadata = mpg.metadata()
         XCTAssertTrue(metadata.isEmpty)
     }
-    
+
     // MARK: - Enum Tests
-    
+
     func testParameterEnums() throws {
         // Test that parameter enums have correct raw values
         XCTAssertEqual(MPG123Param.verbose.rawValue, 0)
@@ -256,9 +261,9 @@ final class MPG123Tests: XCTestCase {
         XCTAssertEqual(MPG123Feature.output16Bit.rawValue, 2)
         XCTAssertEqual(MPG123Feature.equalizer.rawValue, 14)
     }
-    
+
     // MARK: - Frame Info Tests
-    
+
     func testFrameInfo() throws {
         // Test creating frame info with default values
         // Note: We can't directly create mpg123_frameinfo2 in tests
@@ -269,9 +274,9 @@ final class MPG123Tests: XCTestCase {
 
 // MARK: - Test Extensions
 
-// Extension to access private properties for testing
+/// Extension to access private properties for testing
 extension MPG123.AudioStream {
     var chunkSize: Int {
-        return 1024 // Default chunk size for testing
+        1024 // Default chunk size for testing
     }
 }

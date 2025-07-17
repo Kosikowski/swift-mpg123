@@ -8,9 +8,13 @@ import Foundation
 public extension MPG123 {
     /// A streaming interface that produces chunks of decoded audio data.
     struct AudioStream: Sequence, IteratorProtocol {
+        // MARK: Properties
+
         private let mpg123Instance: MPG123
         private let chunkSize: Int
         private var isDone: Bool = false
+
+        // MARK: Lifecycle
 
         /// Initializes the audio stream sequence.
         /// - Parameters:
@@ -20,6 +24,8 @@ public extension MPG123 {
             self.mpg123Instance = mpg123Instance
             self.chunkSize = chunkSize
         }
+
+        // MARK: Functions
 
         /// Produces the next chunk of decoded audio data.
         /// - Returns: A Data object containing the next chunk, or nil if the stream is finished.
@@ -43,7 +49,7 @@ public extension MPG123 {
     /// - Parameter chunkSize: Size in bytes of each data chunk.
     /// - Returns: An AudioStream sequence for iterating over audio data.
     func stream(chunkSize: Int = 4096) -> AudioStream {
-        return AudioStream(mpg123Instance: self, chunkSize: chunkSize)
+        AudioStream(mpg123Instance: self, chunkSize: chunkSize)
     }
 
     /// Reads all remaining audio data from the stream.

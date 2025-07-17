@@ -6,6 +6,8 @@
 import Foundation
 import mpg123
 
+// MARK: - MPG123Error
+
 /// Custom error types for MPG123 operations.
 public enum MPG123Error: Error {
     case initializationFailed
@@ -57,108 +59,112 @@ public enum MPG123Error: Error {
     case intOverflow
     case badFloat
 
+    // MARK: Computed Properties
+
     /// Get the error description from mpg123
     public var description: String {
         switch self {
-        case .initializationFailed:
-            return "Failed to initialize mpg123 library"
-        case .openFailed:
-            return "Failed to open MP3 file"
-        case .readFailed:
-            return "Failed to read audio data"
-        case .seekFailed:
-            return "Failed to seek in audio stream"
-        case .formatConfigurationFailed:
-            return "Failed to configure audio format"
-        case .parameterError:
-            return "Parameter error"
-        case .featureNotAvailable:
-            return "Feature not available in this build"
-        case .invalidHandle:
-            return "Invalid mpg123 handle"
-        case .decoderError:
-            return "Decoder error"
-        case .bufferError:
-            return "Buffer error"
-        case .outOfMemory:
-            return "Out of memory"
-        case .badParameter:
-            return "Bad parameter"
-        case .badChannel:
-            return "Invalid channel number"
-        case .badRate:
-            return "Invalid sample rate"
-        case .badDecoder:
-            return "Invalid decoder choice"
-        case .noBuffers:
-            return "Unable to initialize frame buffers"
-        case .badRVA:
-            return "Invalid RVA mode"
-        case .noGapless:
-            return "Gapless decoding not supported"
-        case .noSpace:
-            return "Not enough buffer space"
-        case .badTypes:
-            return "Incompatible numeric data types"
-        case .badBand:
-            return "Bad equalizer band"
-        case .nullPointer:
-            return "Null pointer given"
-        case .readerError:
-            return "Error reading the stream"
-        case .noSeekFromEnd:
-            return "Cannot seek from end"
-        case .badWhence:
-            return "Invalid whence for seek function"
-        case .noTimeout:
-            return "Timeout not supported"
-        case .badFile:
-            return "File access error"
-        case .noSeek:
-            return "Seek not supported by stream"
-        case .noReader:
-            return "No stream opened or no reader callback"
-        case .badPars:
-            return "Bad parameter handle"
-        case .badIndexParam:
-            return "Bad parameters to index functions"
-        case .outOfSync:
-            return "Lost track in bytestream"
-        case .resyncFail:
-            return "Resync failed to find valid MPEG data"
-        case .no8Bit:
-            return "No 8bit encoding possible"
-        case .badAlign:
-            return "Stack alignment error"
-        case .nullBuffer:
-            return "NULL input buffer with non-zero size"
-        case .noRelSeek:
-            return "Relative seek not possible"
-        case .badKey:
-            return "Bad key value"
-        case .noIndex:
-            return "No frame index in this build"
-        case .indexFail:
-            return "Frame index error"
-        case .badDecoderSetup:
-            return "Bad decoder setup"
-        case .missingFeature:
-            return "Feature not built into libmpg123"
-        case .badValue:
-            return "Bad value given"
-        case .lseekFailed:
-            return "Low-level seek failed"
-        case .badCustomIO:
-            return "Custom I/O not prepared"
-        case .lfsOverflow:
-            return "Offset value overflow"
-        case .intOverflow:
-            return "Integer overflow"
-        case .badFloat:
-            return "Floating-point computation error"
+            case .initializationFailed:
+                return "Failed to initialize mpg123 library"
+            case .openFailed:
+                return "Failed to open MP3 file"
+            case .readFailed:
+                return "Failed to read audio data"
+            case .seekFailed:
+                return "Failed to seek in audio stream"
+            case .formatConfigurationFailed:
+                return "Failed to configure audio format"
+            case .parameterError:
+                return "Parameter error"
+            case .featureNotAvailable:
+                return "Feature not available in this build"
+            case .invalidHandle:
+                return "Invalid mpg123 handle"
+            case .decoderError:
+                return "Decoder error"
+            case .bufferError:
+                return "Buffer error"
+            case .outOfMemory:
+                return "Out of memory"
+            case .badParameter:
+                return "Bad parameter"
+            case .badChannel:
+                return "Invalid channel number"
+            case .badRate:
+                return "Invalid sample rate"
+            case .badDecoder:
+                return "Invalid decoder choice"
+            case .noBuffers:
+                return "Unable to initialize frame buffers"
+            case .badRVA:
+                return "Invalid RVA mode"
+            case .noGapless:
+                return "Gapless decoding not supported"
+            case .noSpace:
+                return "Not enough buffer space"
+            case .badTypes:
+                return "Incompatible numeric data types"
+            case .badBand:
+                return "Bad equalizer band"
+            case .nullPointer:
+                return "Null pointer given"
+            case .readerError:
+                return "Error reading the stream"
+            case .noSeekFromEnd:
+                return "Cannot seek from end"
+            case .badWhence:
+                return "Invalid whence for seek function"
+            case .noTimeout:
+                return "Timeout not supported"
+            case .badFile:
+                return "File access error"
+            case .noSeek:
+                return "Seek not supported by stream"
+            case .noReader:
+                return "No stream opened or no reader callback"
+            case .badPars:
+                return "Bad parameter handle"
+            case .badIndexParam:
+                return "Bad parameters to index functions"
+            case .outOfSync:
+                return "Lost track in bytestream"
+            case .resyncFail:
+                return "Resync failed to find valid MPEG data"
+            case .no8Bit:
+                return "No 8bit encoding possible"
+            case .badAlign:
+                return "Stack alignment error"
+            case .nullBuffer:
+                return "NULL input buffer with non-zero size"
+            case .noRelSeek:
+                return "Relative seek not possible"
+            case .badKey:
+                return "Bad key value"
+            case .noIndex:
+                return "No frame index in this build"
+            case .indexFail:
+                return "Frame index error"
+            case .badDecoderSetup:
+                return "Bad decoder setup"
+            case .missingFeature:
+                return "Feature not built into libmpg123"
+            case .badValue:
+                return "Bad value given"
+            case .lseekFailed:
+                return "Low-level seek failed"
+            case .badCustomIO:
+                return "Custom I/O not prepared"
+            case .lfsOverflow:
+                return "Offset value overflow"
+            case .intOverflow:
+                return "Integer overflow"
+            case .badFloat:
+                return "Floating-point computation error"
         }
     }
 }
+
+// MARK: - MPG123Param
 
 /// MPG123 parameter types
 public enum MPG123Param: Int32 {
@@ -183,6 +189,8 @@ public enum MPG123Param: Int32 {
     case feedBuffer = 18
     case freeformatSize = 19
 }
+
+// MARK: - MPG123Flag
 
 /// MPG123 parameter flags
 public enum MPG123Flag: Int32 {
@@ -214,12 +222,16 @@ public enum MPG123Flag: Int32 {
     case noFrankenstein = 0x1000000
 }
 
+// MARK: - MPG123RVA
+
 /// MPG123 RVA modes
 public enum MPG123RVA: Int32 {
     case off = 0
     case mix = 1
     case album = 2
 }
+
+// MARK: - MPG123Feature
 
 /// MPG123 feature set
 public enum MPG123Feature: Int32 {
@@ -243,6 +255,8 @@ public enum MPG123Feature: Int32 {
     case outputFloat64 = 17
 }
 
+// MARK: - ID3Tag
+
 /// ID3 tag keys used for metadata dictionary
 public enum ID3Tag {
     public static let title = "title"
@@ -253,8 +267,12 @@ public enum ID3Tag {
     public static let genre = "genre"
 }
 
+// MARK: - MPG123FrameInfo
+
 /// Frame information structure
 public struct MPG123FrameInfo {
+    // MARK: Properties
+
     public let version: Int32
     public let layer: Int32
     public let rate: Int
@@ -266,6 +284,8 @@ public struct MPG123FrameInfo {
     public let bitrate: Int32
     public let abrRate: Int32
     public let vbr: Int32
+
+    // MARK: Lifecycle
 
     init(from mpg123Info: mpg123_frameinfo2) {
         version = mpg123Info.version
