@@ -1,0 +1,10 @@
+# .spi.yml  – Swift Package Index build instructions
+version: 1
+
+builder:
+  macos:
+    brew:
+      - mpg123            # same name you used in Package.swift
+  linux:
+    apt:
+      - libmpg123-dev 
