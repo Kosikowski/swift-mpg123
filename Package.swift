@@ -113,6 +113,8 @@ targets.insert(
             "src/sysutil.c", "src/local.c",
             // Exclude files that include compat.h directly
             "src/getlopt.c", "src/libmpg123/stringbuf.c", "src/libmpg123/icy2utf8.c", "src/libmpg123/lfs_wrap.c", "src/libout123/xfermem.c", "src/libout123/stringlists.c", "src/libout123/module.c",
+            // Exclude libsyn123 directory (has POSIX dependencies)
+            "src/libsyn123",
             "src/libout123/modules/pulse.c", "src/libout123/modules/alsa.c", "src/libout123/modules/oss.c", "src/libout123/modules/tinyalsa.c", "src/libout123/modules/sndio.c", "src/libout123/modules/esd.c", "src/libout123/modules/nas.c", "src/libout123/modules/arts.c", "src/libout123/modules/jack.c",
             // Only include win32, win32_wasapi, etc. for Windows
             // Exclude all other platform modules
