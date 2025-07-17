@@ -48,8 +48,6 @@ See [docs/MP3PlayerDemo.md](docs/MP3PlayerDemo.md) for build and usage instructi
 ### Prerequisites
 
 - **macOS 12.0+** (primary development platform)
-- **Linux** (Ubuntu 20.04+)
-- **Windows** (Windows 10/11 with Swift support)
 - **Swift 5.9+**
 - **Xcode 15.0+** (for macOS development)
 - **Homebrew** (for installing mpg123 on macOS)
@@ -72,18 +70,6 @@ The package depends on the mpg123 library, which must be installed on your syste
 **macOS:**
 ```bash
 brew install mpg123
-```
-
-**Linux (Ubuntu/Debian):**
-```bash
-sudo apt-get update
-sudo apt-get install libmpg123-dev pkg-config
-```
-
-**Windows:**
-```bash
-# Note: mpg123 installation on Windows may require manual setup
-# Consider using vcpkg or manual compilation
 ```
 
 ## Installation
@@ -169,10 +155,7 @@ This project uses automated code quality tools:
 
 The project includes a comprehensive CI/CD pipeline that runs on:
 
-- **macOS** - Build, test, and validate on latest macOS
-- **Ubuntu** - Build and test on Linux
-- **Multiple Swift versions** - Test compatibility with Swift 5.9 and 6.1.2
-- **Cross-platform support** - macOS, Linux, Windows
+- **macOS** - Build, test, and validate on latest macOS with Swift 5.9 and 6.1.2
 - **Code quality checks** - SwiftFormat validation
 - **Security scanning** - Vulnerability scanning with Trivy
 - **Package validation** - Verify package structure and dependencies
@@ -216,8 +199,7 @@ When contributing to this project:
 6. Push and create a pull request
 
 The CI pipeline will automatically:
-- Build and test your changes on macOS, Linux, and Windows
-- Test with Swift 5.9 and 6.1.2
+- Build and test your changes on macOS with Swift 5.9 and 6.1.2
 - Check code quality with SwiftFormat
 - Validate the package structure
 - Run security scans
