@@ -92,7 +92,7 @@ Add SwiftMpg123 to your project's dependencies in `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/swift-mpg123.git", from: "1.0.0")
+    .package(url: "https://github.com/Kosikowski/swift-mpg123.git", from: "1.0.0")
 ]
 ```
 
@@ -105,7 +105,7 @@ Or add it directly to your Xcode project:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/swift-mpg123.git
+git clone https://github.com/Kosikowski/swift-mpg123.git
 cd swift-mpg123
 ```
 
@@ -641,7 +641,7 @@ brew install mpg123
 
 2. Clone and build:
 ```bash
-git clone https://github.com/yourusername/swift-mpg123.git
+git clone https://github.com/Kosikowski/swift-mpg123.git
 cd swift-mpg123
 swift build
 ```
