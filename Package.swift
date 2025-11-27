@@ -55,7 +55,15 @@ targets.insert(
             "src/mpg123.c", "src/out123.c", "src/mpg123-id3dump.c", "src/mpg123-strip.c", "src/term_posix.c", "src/term_none.c", "src/audio.c", "src/control_generic.c", "src/term.c", "src/common.c", "src/metaprint.c", "src/playlist.c", "src/equalizer.c", "src/httpget.c", "src/streamdump.c", "src/net123_exec.c", "src/resolver.c", "src/libout123/legacy_module.c", "src/libmpg123/calctables.c", "src/libout123/modules/dummy.c"
         ],
         sources: ["src"],
-        publicHeadersPath: "include"
+        publicHeadersPath: "include",
+        cSettings: [
+            // Disable modules so macOS system headers don't require the new clang feature.
+            .unsafeFlags([
+                "-fno-modules",
+                "-fno-implicit-modules",
+                "-fno-implicit-module-import"
+            ])
+        ]
     ), at: 0)
 #endif
 
