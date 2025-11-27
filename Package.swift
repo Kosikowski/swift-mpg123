@@ -63,6 +63,10 @@ targets.insert(
                 "-fno-implicit-modules"
             ])
         ]
+        ,
+        linkerSettings: [
+            .linkedFramework("CoreAudio")
+        ]
     ), at: 0)
 #endif
 
