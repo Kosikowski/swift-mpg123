@@ -9,7 +9,8 @@ var targets: [Target] = [
         dependencies: ["cmpg123"],
         path: "Sources/SwiftMpg123",
         linkerSettings: [
-            .linkedFramework("CoreAudio")
+            .linkedFramework("CoreAudio", .when(platforms: [.macOS])),
+            .linkedFramework("AudioToolbox", .when(platforms: [.macOS]))
         ]
     ),
      .testTarget(
@@ -68,7 +69,8 @@ targets.insert(
         ]
         ,
         linkerSettings: [
-            .linkedFramework("CoreAudio")
+            .linkedFramework("CoreAudio"),
+            .linkedFramework("AudioToolbox")
         ]
     ), at: 0)
 #endif
