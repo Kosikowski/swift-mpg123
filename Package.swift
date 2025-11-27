@@ -7,7 +7,10 @@ var targets: [Target] = [
     .target(
         name: "SwiftMpg123",
         dependencies: ["cmpg123"],
-        path: "Sources/SwiftMpg123"
+        path: "Sources/SwiftMpg123",
+        linkerSettings: [
+            .linkedFramework("CoreAudio")
+        ]
     ),
      .testTarget(
         name: "SwiftMpg123Tests",
