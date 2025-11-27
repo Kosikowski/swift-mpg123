@@ -60,8 +60,7 @@ targets.insert(
             // Disable modules so macOS system headers don't require the new clang feature.
             .unsafeFlags([
                 "-fno-modules",
-                "-fno-implicit-modules",
-                "-fno-implicit-module-import"
+                "-fno-implicit-modules"
             ])
         ]
     ), at: 0)
